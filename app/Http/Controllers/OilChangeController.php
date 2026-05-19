@@ -17,7 +17,7 @@ class OilChangeController extends Controller
         $error = $this->validateInput($currentOdo, $lastOdo, $lastOilChange);
 
         if(!empty($error)){
-            return view('welcome', ['error' =>$error]);
+            return view('home', ['error' =>$error]);
         }
         $car = new Car;
         $car->currentOdometer = $currentOdo;
@@ -25,11 +25,34 @@ class OilChangeController extends Controller
         $car->lastOilChange = $lastOilChange;
         $car->save();
         // store data in db, wrangle
-        return redirect()->route('result', ['id' => $car->id]);;
+        return redirect()->route('result', ['id' => $car->id]);
     }
 
     public function result(int $id):View{
         $car = Car::find($id);
+        $message = checkIfOilChangeIsNeeded($car->currentOdometer,$car->lastOdometer,$car->lastOilChange);
+        return view('result', ['currentOdo'=>$car->currentOdometer, 
+                               'lastOdometer'=>$car->lastOdometer, 
+                               'lastOilChange'=>$car->lastOilChange, 
+                                'message'=>$message]);
+    }
+
+    private function checkIfOilChangeIsNeeded($currentOdo, $lastOdo, $date){
+        $distanceTraveled = $currentOdo - $lastOdo;
+        $targetDate = new DateTime(date);
+        $sixMonthsAgo = new DateTime('-6 months');
+
+        $result = "No oil change required";
+
+        if($distanceTraveled > 5000){
+            $result = "You have come a great distance traveller. An oil change is required";
+        }
+
+        if($targetDate < $sixMonthsAgo){
+            $result = "An age has past since our paths have crossed. An oil change is required";
+        }
+
+        return $result;
     }
 
     private function validateInput($currentOdo, $lastOdo, $date){
