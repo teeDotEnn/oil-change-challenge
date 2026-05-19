@@ -4,38 +4,78 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 use DateTime; 
+use App\Models\Car;
 
 class OilChangeController extends Controller
 {
     public function check(Request $req):View{
 
         $currentOdo = $req->input('currentOdometer');
-        $lastOilChange = new DateTime($req->input('lastOilChangeDate'));
+        $lastOilChange = $req->input('lastOilChangeDate');
         $lastOdo = $req->input('lastOdometer');
-        $now = new DateTime();
-        $valid = true;
-        $error = "";
-        if(!ctype_digit($currentOdo)){
-            $error = "Please only use digits in the Current Odometer Field";
-            $valid = false;
-        }
-
-        if(!ctype_digit($lastOdo)){
-            $error = "Please only use digits in the Last Odometer Field";
-            $valid = false;
-        }
         
-        if($lastOilChange > $now){
-            $error = "date selected is in the future";
-            $valid = false;
+        $error = $this->validateInput($currentOdo, $lastOdo, $lastOilChange);
+
+        if(!empty($error)){
+            return view('welcome', ['error' =>$error]);
         }
-
-        error_log($currentOdo);
-        error_log($lastOilChange->format('Y-m-d'));
-        error_log($lastOdo);
-
-
-        return view('check', ['valid' => $valid, 'error' => $error]);
+        $car = new Car;
+        $car->currentOdometer = $currentOdo;
+        $car->lastOdometer = $lastOdo;
+        $car->lastOilChange = $lastOilChange;
+        $car->save();
+        // store data in db, wrangle
+        return redirect()->route('result', ['id' => $car->id]);;
     }
 
+    public function result(int $id):View{
+        $car = Car::find($id);
+    }
+
+    private function validateInput($currentOdo, $lastOdo, $date){
+        $error = "";
+        if(empty($currentOdo)){
+            $error .= "Current odometer reading is required \n";
+        }
+
+        if(empty($currentOdo)){
+            $error .= "Last odometer reading is required \n";
+        }
+
+        if(empty($date)){
+            $error .= "Last oil change date is required \n";
+        }
+
+        // no point doing anything more if we don't even have all the data
+        if(!empty($error)){
+            return $error;
+        }
+
+        if(!is_numeric($currentOdo)){
+            $error .= "Please only use digits in the Current Odometer Field \n";
+        }
+
+        if(!is_numeric($lastOdo)){
+            $error .= "Please only use digits in the Last Odometer Field \n";
+        }
+        
+        // stopping validation here, do not want to process any dirty data further
+        // intval does some funky lifting, avoiding footgung
+        if(!empty($error)){
+            return $error;
+        }
+
+        $currentOdo = intval($currentOdo);
+        $lastOdo = intval($lastOdo);
+
+        if($date > new DateTime()){
+            $error .= "Date selected is in the future \n" ;
+        }
+
+        if($lastOdo > $currentOdo){
+            $error .= "Last odometer reading is greater than current odometer reading";
+        }
+
+        return $error;
+    }
 }

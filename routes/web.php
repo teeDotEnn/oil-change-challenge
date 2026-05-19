@@ -8,3 +8,5 @@ Route::get('/', function () {
 });
 
 Route::post('/check', [OilChangeController::class, 'check']);
+
+Route::get('/result/{id}', [OilChangeController::class, 'check']);
