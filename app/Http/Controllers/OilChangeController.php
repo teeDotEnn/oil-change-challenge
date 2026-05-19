@@ -38,6 +38,7 @@ class OilChangeController extends Controller
                                'message'=>$message]);
     }
 
+    // This could (should?) be ported to the model (or a business layer of some sort)
     private function checkIfOilChangeIsNeeded($currentOdo, $lastOdo, $date){
         $distanceTraveled = $currentOdo - $lastOdo;
         $targetDate = new DateTime($date);
