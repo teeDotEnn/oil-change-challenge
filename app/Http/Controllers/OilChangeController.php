@@ -8,7 +8,7 @@ use App\Models\Car;
 
 class OilChangeController extends Controller
 {
-    public function check(Request $req):View{
+    public function check(Request $req){
 
         $currentOdo = $req->input('currentOdometer');
         $lastOilChange = $req->input('lastOilChangeDate');
@@ -25,21 +25,22 @@ class OilChangeController extends Controller
         $car->lastOilChange = $lastOilChange;
         $car->save();
         // store data in db, wrangle
-        return redirect()->route('result', ['id' => $car->id]);
+        return redirect()->action([OilChangeController::class,'result'], ['id' => $car->id]);
     }
 
     public function result(int $id):View{
         $car = Car::find($id);
-        $message = checkIfOilChangeIsNeeded($car->currentOdometer,$car->lastOdometer,$car->lastOilChange);
-        return view('result', ['currentOdo'=>$car->currentOdometer, 
+        $message = $this->checkIfOilChangeIsNeeded($car->currentOdometer,$car->lastOdometer,$car->lastOilChange);
+        
+        return view('result', ['currentOdometer'=>$car->currentOdometer, 
                                'lastOdometer'=>$car->lastOdometer, 
                                'lastOilChange'=>$car->lastOilChange, 
-                                'message'=>$message]);
+                               'message'=>$message]);
     }
 
     private function checkIfOilChangeIsNeeded($currentOdo, $lastOdo, $date){
         $distanceTraveled = $currentOdo - $lastOdo;
-        $targetDate = new DateTime(date);
+        $targetDate = new DateTime($date);
         $sixMonthsAgo = new DateTime('-6 months');
 
         $result = "No oil change required";

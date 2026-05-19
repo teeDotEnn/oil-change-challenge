@@ -8,15 +8,18 @@
 
     </head>
     <body class="">
-        <header class="">
-            Welcome to Tim's Oil Change
+        <header class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container-fluid">
+                <div class="navbar-brand">Welcome to Tim's Oil Change</div>
+            </div>
+
         </header>
-            <main class="">
+            <main class="container-fluid">
                 <form id="carInfo" method="post" action="/check">
                     @csrf
-                    <label for="currentOdometer">Current odometer reading  </label><input type="text" id="currentOdometer" name="currentOdometer"/>
-                    <label for="lastOilChangeDate">Date of last oil change  </label><input type="date" id="lastOilChangeDate" name="lastOilChangeDate"/>
-                    <label for="lastOdometer">Odometer reading at last oil change  </label><input type="text" id="lastOdometer" name="lastOdometer"/>
+                    <div class="mb-3"><label class="form-label" for="currentOdometer">Current odometer reading  </label><input class="form-control" type="text" id="currentOdometer" name="currentOdometer"/></div>
+                    <div class="mb-3"><label class="form-label" for="lastOilChangeDate">Date of last oil change  </label><input class="form-control" type="date" id="lastOilChangeDate" name="lastOilChangeDate"/></div>
+                    <div class="mb-3"><label class="form-label" for="lastOdometer">Odometer reading at last oil change  </label><input class="form-control" type="text" id="lastOdometer" name="lastOdometer"/></div>
                     <input type="submit" value="Send Request" />
                 </form>
                @empty($error)
