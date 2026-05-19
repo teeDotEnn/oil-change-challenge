@@ -11,15 +11,20 @@
         <header class="navbar navbar-expand-lg navbar-light bg-light">
             <div class="container-fluid">
                 <div class="navbar-brand">Welcome to Tim's Oil Change</div>
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="/">Home</a>
+                    </li>
+                </ul>
             </div>
 
         </header>
-        <main class="container-fluid">
+        <main class="container-fluid text-center">
             <div>
-                <h1>{{$message}}</h1>
+                <h3>{{$message}}</h3>
             </div>
-            
-            <div class="row align-items-start">
+
+            <div class="row justify-content-center">
                 <div class="card" style="width: 18rem;">
                     <div class="card-body">
                         <h5 class="card-title">Current Odometer Reading</h5>

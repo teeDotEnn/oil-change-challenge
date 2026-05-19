@@ -11,9 +11,14 @@
         <header class="navbar navbar-expand-lg navbar-light bg-light">
             <div class="container-fluid">
                 <div class="navbar-brand">Welcome to Tim's Oil Change</div>
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="/">Home</a>
+                    </li>
+                </ul>
             </div>
         </header>
-            <main class="container-fluid">
+            <main class="container-fluid d-flex justify-content-center align-items-center">
                 <form id="carInfo" method="post" action="/check">
                     @csrf
                     <div class="mb-3">
